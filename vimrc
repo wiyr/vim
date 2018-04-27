@@ -140,10 +140,12 @@ Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-"let g:UltiSnipsExpandTrigger="<c-e>"
-inoremap <Tab> <c-r>=UltiSnips#ExpandSnippet()<cr>
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" inoremap <Tab> <c-r>=UltiSnips#ExpandSnippet()<cr>
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+" let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+" let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
@@ -427,7 +429,7 @@ au filetype c,cpp map <F3> :call SetTitleOfCodeforces()<CR>GkkO
 func! SetTitleOfCodeforces()
 	call setline(1,       "#include <bits/stdc++.h>")
 	call append(line("$"), "typedef long long LL;")
-	call append(line("$"), "using namespace std;")
+    "call append(line("$"), "using namespace std;")
 	call append(line("$"), "#define ALL(x) (x.begin(), x.end())")
 	call append(line("$"), "#define mset(a,i) memset(a,i,sizeof(a))")
 	call append(line("$"), "#define rep(i,n) for(int i = 0;i < n;i ++)")
