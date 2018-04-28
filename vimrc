@@ -429,7 +429,7 @@ au filetype c,cpp map <F3> :call SetTitleOfCodeforces()<CR>GkkO
 func! SetTitleOfCodeforces()
 	call setline(1,       "#include <bits/stdc++.h>")
 	call append(line("$"), "typedef long long LL;")
-    "call append(line("$"), "using namespace std;")
+    call append(line("$"), "using namespace std;")
 	call append(line("$"), "#define ALL(x) (x.begin(), x.end())")
 	call append(line("$"), "#define mset(a,i) memset(a,i,sizeof(a))")
 	call append(line("$"), "#define rep(i,n) for(int i = 0;i < n;i ++)")
