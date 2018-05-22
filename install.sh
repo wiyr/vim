@@ -17,5 +17,5 @@ if [ ! -e $HOME/.vim/vimrc ]; then
 fi
 ln -s $HOME/.vim/vimrc $HOME/.vimrc
 
-/usr/bin/env git clone https://github.com/VundleVim/Vundle.vim.git $HOME/.vim/bundle/Vundle.vim
-vim +BundleInstall +qall
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+vim +PlugInstall +qall

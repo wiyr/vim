@@ -85,10 +85,10 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
-Plugin 'VundleVim/Vundle.vim'
+call plug#begin('~/.vim/plugged')
 
 " 多光标
-Plugin 'terryma/vim-multiple-cursors'
+Plug 'terryma/vim-multiple-cursors'
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-n>'
 let g:multi_cursor_prev_key='<C-p>'
@@ -97,12 +97,12 @@ let g:multi_cursor_quit_key='<ESC>'
 
 
 " 代码域选择
-Plugin 'terryma/vim-expand-region'
+Plug 'terryma/vim-expand-region'
 nmap <Up> <Plug>(expand_region_expand)
 nmap <Down> <Plug>(expand_region_shrink)
 
 " 查找文件工具
-Plugin 'kien/ctrlp.vim'
+Plug 'kien/ctrlp.vim'
 let g:ctrlp_working_path_mode = 'rw'
 let g:ctrlp_by_filename = 0
 let g:ctrlp_max_files=500
@@ -118,7 +118,7 @@ au filetype nerdtree nnoremap cm :ClearBookmarks<CR>
 au filetype nerdtree nnoremap ca :ClearAllBookmarks<CR>
 
 "代码补全
-Plugin 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe'
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 "display keywords of the programming language
 let g:ycm_seed_identifiers_with_syntax = 1
@@ -138,14 +138,14 @@ set completeopt=menu,menuone
 let g:ycm_key_invoke_completion = '<c-z>'
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 
-Plugin 'rdnetto/YCM-Generator'
+Plug 'rdnetto/YCM-Generator'
 
-Plugin 'nathanaelkane/vim-indent-guides'
+Plug 'nathanaelkane/vim-indent-guides'
 let g:indent_guides_guide_size = 1
 let g:indent_guides_enable_on_vim_startup = 1
 
 "tags
-Plugin 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 
 " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
@@ -179,7 +179,7 @@ if !isdirectory(s:vim_tags)
    silent! call mkdir(s:vim_tags, 'p')
 endif
 
-Plugin 'skywind3000/asyncrun.vim'
+Plug 'skywind3000/asyncrun.vim'
 " automatically open quickfix window when AsyncRun command is executed
 " set the quickfix window 6 lines height.
 let g:asyncrun_open = 15
@@ -191,7 +191,7 @@ let g:asyncrun_bell = 1
 au FileType c,cpp map <F4> :w<CR> :AsyncRun scons -uj8 <CR>
 
 " 文件列表
-Plugin 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
 "let NERDTreeShowBookmarks=1
 " Make sure that when NT root is changed, Vim's pwd is also updated
 let NERDTreeChDirMode = 2
@@ -211,9 +211,9 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 map <leader>T :NERDTreeFind<cr>
 
 " Track the engine.
-Plugin 'SirVer/ultisnips'
+Plug 'SirVer/ultisnips'
 " Snippets are separated from the engine. Add this if you want them:
-Plugin 'honza/vim-snippets'
+Plug 'honza/vim-snippets'
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 " inoremap <Tab> <c-r>=UltiSnips#ExpandSnippet()<cr>
@@ -227,15 +227,15 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEditSplit="vertical"
 
 " tag列表
-Plugin 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 nnoremap <silent> <leader>m :Tagbar<CR>
 
 " webapi-vim
-Plugin 'mattn/webapi-vim'
+Plug 'mattn/webapi-vim'
 
 
 " go语言工具
-Plugin 'fatih/vim-go'
+Plug 'fatih/vim-go'
 let g:go_fmt_command = "goimports"
 let g:go_highlight_types = 1
 let g:go_highlight_fileds = 1
@@ -285,9 +285,9 @@ let g:go_test_show_name = 1
 
 
 " git command in vim
-Plugin 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 " git状态侧边栏
-Plugin 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter'
 let g:gitgutter_highlight_lines = 0
 let g:gitgutter_escape_grep = 1
 let g:gitgutter_eager = 1
@@ -297,7 +297,7 @@ let g:gitgutter_sign_removed = '--'
 let g:gitgutter_sign_modified_removed = '~-'
 
 "快速移动
-Plugin 'easymotion/vim-easymotion'
+Plug 'easymotion/vim-easymotion'
 "map  / <Plug>(easymotion-sn)
 "omap / <Plug>(easymotion-tn)
 " These `n` & `N` mappings are options. You do not have to map `n` & `N` to
@@ -313,56 +313,56 @@ Plugin 'easymotion/vim-easymotion'
 "let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
 " 增强状态栏
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 
 " color配色
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'TuttiColori-Colorscheme'
-Plugin 'junegunn/seoul256.vim'
-Plugin 'iCyMind/NeoSolarized'
-Plugin 'desert256.vim'
-Plugin 'danilo-augusto/vim-afterglow'
-Plugin 'tango.vim'
-Plugin 'flazz/vim-colorschemes'
+Plug 'altercation/vim-colors-solarized'
+Plug 'TuttiColori-Colorscheme'
+Plug 'junegunn/seoul256.vim'
+Plug 'iCyMind/NeoSolarized'
+Plug 'desert256.vim'
+Plug 'danilo-augusto/vim-afterglow'
+Plug 'tango.vim'
+Plug 'flazz/vim-colorschemes'
 
 " 注释工具
-Plugin 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdcommenter'
 
 "typescript highlight
-Plugin 'leafgarland/typescript-vim'
+Plug 'leafgarland/typescript-vim'
 "it works pretty well but there are cases where it fails.
 let g:typescript_indent_disable = 1
 
 "Vim indenter for standalone and embedded JavaScript and TypeScript.
-Plugin 'jason0x43/vim-js-indent'
+Plug 'jason0x43/vim-js-indent'
 
 "typescript language
-"Plugin 'Shougo/vimproc.vim'
+"Plug 'Shougo/vimproc.vim'
 
-Plugin 'Quramy/tsuquyomi'
+Plug 'Quramy/tsuquyomi'
 "use syntastic check
 let g:tsuquyomi_disable_quickfix = 1
 
 "easy code formatting
-Plugin 'Chiel92/vim-autoformat'
+Plug 'Chiel92/vim-autoformat'
 let verbose=1
 "let g:formatdef_my_cpp='"astyle --style=java"'
 "let g:formatters_cpp=['my_cpp']
 "sudo pip install --upgrade autopep8
 let g:formatters_py=['yapf']
-"Plugin 'google/yapf', { 'rtp': 'plugins/vim' }
+"Plug 'google/yapf', { 'rtp': 'plugins/vim' }
 
-"Plugin 'nvie/vim-flake8'
+"Plug 'nvie/vim-flake8'
 "let g:flake8_show_in_file=1
 "let g:flake8_show_in_gutter=1  " show
 "autocmd BufWritePost *.py call Flake8()
 "" to use colors defined in the colorscheme
 
 " 代码风格检查
-Plugin 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic'
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
@@ -400,22 +400,22 @@ function! ChangeJump()
 endfunction
 
 " set mode of write markdown or text
-Plugin 'junegunn/goyo.vim'
-Plugin 'amix/vim-zenroom2'
+Plug 'junegunn/goyo.vim'
+Plug 'amix/vim-zenroom2'
 let g:goyo_width=100
 let g:goyo_margin_top = 2
 let g:goyo_margin_bottom = 2
 nnoremap <silent> <leader>z :Goyo<cr>
 
 "Hyperfocus-writing in Vim.
-"Plugin 'junegunn/limelight.vim'
+"Plug 'junegunn/limelight.vim'
 
 " confict with nnoremap <C-J> <C-W>j
-"Plugin 'vim-latex/vim-latex'
-Plugin 'lervag/vimtex'
+"Plug 'vim-latex/vim-latex'
+Plug 'lervag/vimtex'
 
 
-Plugin 'python-mode/python-mode'
+Plug 'python-mode/python-mode'
 let g:pymode_rope_goto_definition_bind = '<C-]>'
 let g:pymode_rope_goto_definition_cmd = 'e'
 let g:pymode_rope_lookup_project = 0
@@ -429,7 +429,7 @@ let g:pymode_syntax = 0
 let g:pymode_options_max_line_length = 79
 
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
+call plug#end()
 filetype plugin indent on    " required
 
 
