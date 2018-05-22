@@ -1,18 +1,22 @@
-"inoremap <esc> <nop>
-set previewheight=7
-set nocompatible
+"inoremap <esc> <nop> set previewheight=7 set nocompatible
 let mapleader = ','
 let localleader = '\\'
 set sw=4 ts=4 nu nobk ai cin
 set expandtab
+set encoding=utf-8
+set fileencoding=utf-8
 "shiftwidth tabstop number nobackup autoindent cindent
 syn on
-set mp=g++\ -std=c++11\ %\ -O2\ -o\ %<
+set mp=g++\ -std=c++11\ %\ -w\ -O2\ -o\ %<
 map <F5> :w<CR>:make<CR>
 au filetype c,cpp map <F6> :! ./%< <input.txt  <CR>
 au filetype java map<F5> :w<CR> :!javac %<CR>
 au filetype java map<F6> :!java %< <input.txt <CR>
+au FileType python map<F5> :w<CR> :AsyncRun! -raw python %<CR>
+au FileType python nmap<leader>rr :w<CR> :AsyncRun! -raw python %
+au BufNewFile,BufRead SCon* set filetype=python
 
+"set tags=./tags;,tags,~/.vimtags
 set mouse=a
 nmap <silent> <leader>v :e ~/.vimrc<cr>
 nmap <silent> <leader>s :source ~/.vimrc<cr>:echom 'reload vimrc!'<cr>
@@ -26,7 +30,9 @@ nmap <right> :bn!<cr>
 nmap <left> :bp!<cr>
 nmap ; :
 "remove ^M
-nnoremap <leader>cm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+nnoremap <leader>cmm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+" ^M to \n
+"nnoremap <leader>cmm :%s/<C-v><C-M>/<C-v><cr>/g<CR>
 inoremap jk <Esc>
 " Switch CWD to the directory of the open buffer
 cmap cd. lcd %:p:h
@@ -39,8 +45,11 @@ func! DeleteTrailingWS()
   %s/\s\+$//ge
   exe "normal `z"
 endfunc
-autocmd BufWrite *.tsx,*.cpp,*.txt,*.vimrc,*.md :call DeleteTrailingWS()
-autocmd BufWrite *.py :call DeleteTrailingWS()
+autocmd BufWrite *.tsx,*.cpp,*.vimrc,*.md :call DeleteTrailingWS()
+autocmd BufWrite *.py,*.h :call DeleteTrailingWS()
+
+inoremap <C-h> <left>
+inoremap <C-l> <right>
 
 
 vmap <silent> * :call VisualSearch('f')<CR>
@@ -113,6 +122,73 @@ Plugin 'Valloric/YouCompleteMe'
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 "display keywords of the programming language
 let g:ycm_seed_identifiers_with_syntax = 1
+" trigger ycm syntastic check
+let g:ycm_show_diagnostics_ui = 1
+" enable ycm work in comments
+let g:ycm_complete_in_comments = 1
+" it seems open much useless words
+"let g:ycm_semantic_triggers =  {
+            "\ 'c,cpp,python,java,go': ['re!\w{2}'],
+            "\ }
+
+ " disable preview
+let g:ycm_add_preview_to_completeopt = 0
+set completeopt=menu,menuone
+" trigger complete
+let g:ycm_key_invoke_completion = '<c-z>'
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
+
+Plugin 'rdnetto/YCM-Generator'
+
+Plugin 'nathanaelkane/vim-indent-guides'
+let g:indent_guides_guide_size = 1
+let g:indent_guides_enable_on_vim_startup = 1
+
+"tags
+Plugin 'ludovicchabant/vim-gutentags'
+
+" gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+
+" 所生成的数据文件的名称
+let g:gutentags_ctags_tagfile = 'tags'
+
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+
+" 配置 ctags 的参数
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+
+function! s:get_gutentags_status(mods) abort
+	let l:msg = ''
+	if index(a:mods, 'ctags') > 0
+	   let l:msg .= '♨'
+	 endif
+	 if index(a:mods, 'cscope') > 0
+	   let l:msg .= '♺'
+	 endif
+	 return l:msg
+endfunction
+
+
+" 检测 ~/.cache/tags 不存在就新建
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+
+Plugin 'skywind3000/asyncrun.vim'
+" automatically open quickfix window when AsyncRun command is executed
+" set the quickfix window 6 lines height.
+let g:asyncrun_open = 15
+let $PYTHONUNBUFFERED=1
+nmap <leader>tt :AsyncStop!<CR>
+
+" ring the bell to notify you job finished
+let g:asyncrun_bell = 1
+au FileType c,cpp map <F4> :w<CR> :AsyncRun scons -uj8 <CR>
 
 " 文件列表
 Plugin 'scrooloose/nerdtree'
@@ -121,7 +197,7 @@ Plugin 'scrooloose/nerdtree'
 let NERDTreeChDirMode = 2
 let NERDTreeShowLineNumbers = 1
 let NERDTreeAutoCenter = 1
-let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.DS_Store']
+let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.DS_Store', '\.o']
 let NERDTreeShowHidden=1
 map <leader>n :NERDTreeToggle<CR>
 ":NERDTreeMirror<CR>
@@ -273,10 +349,11 @@ let g:tsuquyomi_disable_quickfix = 1
 "easy code formatting
 Plugin 'Chiel92/vim-autoformat'
 let verbose=1
-let g:formatdef_my_cpp='"astyle --style=java"'
-let g:formatters_cpp=['my_cpp']
+"let g:formatdef_my_cpp='"astyle --style=java"'
+"let g:formatters_cpp=['my_cpp']
 "sudo pip install --upgrade autopep8
-let g:formatters_py=['autopep8']
+let g:formatters_py=['yapf']
+"Plugin 'google/yapf', { 'rtp': 'plugins/vim' }
 
 "Plugin 'nvie/vim-flake8'
 "let g:flake8_show_in_file=1
@@ -289,12 +366,14 @@ Plugin 'scrooloose/syntastic'
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%{gutentags#statusline_cb(function('<SID>get_gutentags_status'))}
+set statusline+=%{gutentags#statusline()}
 set statusline+=%*
 
 let g:syntastic_check_on_open=1
 let g:syntastic_auto_jump=0
 let g:syntastic_php_checkers=['php', 'phpcs']
-let g:syntastic_python_checkers=['flake8']
+let g:syntastic_python_checkers=[]
 let g:syntastic_typescript_checkers = ['tsuquyomi', 'tslint'] " You shouldn't use 'tsc' checker.
 let g:syntastic_c_checkers=[]
 let g:syntastic_cpp_checkers=[]
@@ -339,14 +418,15 @@ Plugin 'lervag/vimtex'
 Plugin 'python-mode/python-mode'
 let g:pymode_rope_goto_definition_bind = '<C-]>'
 let g:pymode_rope_goto_definition_cmd = 'e'
+let g:pymode_rope_lookup_project = 0
+let g:pymode_rope = 0
 let g:pymode_folding = 0
-let g:pymode_rope=1
-let g:pymode_rope_autoimport = 1
+let g:pymode_rope_autoimport = 0
 "use ycm
 let g:pymode_rope_completion = 0
 let g:pymode_lint = 0
 let g:pymode_syntax = 0
-let g:pymode_options_max_line_length = 120
+let g:pymode_options_max_line_length = 79
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -423,25 +503,37 @@ augroup JumpErrorList
 	autocmd QuickFixCmdPost l*    lwindow
 augroup END
 
+" Cscope代码索引
+if has("cscope")
+    set nocscopetag
+    set cscopetagorder=1
+    set nocscopeverbose
+    let cscope_out=findfile("cscope.out", ".;")
+    let cscope_pre=matchstr(cscope_out, ".*/")
+    if !empty(cscope_out) && filereadable(cscope_out)
+        execute 'cs add' cscope_out cscope_pre
+    endif
+
+    nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+    nmap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
+endif
+
 set noswapfile
-
-au filetype c,cpp map <F3> :call SetTitleOfCodeforces()<CR>GkkO
-func! SetTitleOfCodeforces()
-	call setline(1,       "#include <bits/stdc++.h>")
-	call append(line("$"), "typedef long long LL;")
-    call append(line("$"), "using namespace std;")
-	call append(line("$"), "#define ALL(x) (x.begin(), x.end())")
-	call append(line("$"), "#define mset(a,i) memset(a,i,sizeof(a))")
-	call append(line("$"), "#define rep(i,n) for(int i = 0;i < n;i ++)")
-	call append(line("$"), "")
-
-	call append(line("$"), "int main() {")
-	call append(line("$"), "    ios :: sync_with_stdio(false);")
-	call append(line("$"), "    cout << fixed << setprecision(16);")
-	call append(line("$"), "    return 0;")
-	call append(line("$"), "}")
-	call append(line("$"), "")
-endfunc
 
 " error color terminal
 hi clear SpellBad
