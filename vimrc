@@ -81,8 +81,8 @@ endfunction
 " 插件管理工具
 filetype off                  " required
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+"set rtp+=~/.vim/bundle/Vundle.vim
+"call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
 call plug#begin('~/.vim/plugged')
@@ -320,12 +320,9 @@ let g:airline_right_sep=''
 
 " color配色
 Plug 'altercation/vim-colors-solarized'
-Plug 'TuttiColori-Colorscheme'
 Plug 'junegunn/seoul256.vim'
 Plug 'iCyMind/NeoSolarized'
-Plug 'desert256.vim'
 Plug 'danilo-augusto/vim-afterglow'
-Plug 'tango.vim'
 Plug 'flazz/vim-colorschemes'
 
 " 注释工具
@@ -449,8 +446,8 @@ endtry
 "colo desert
 "colo tutticolori
 "colo NeoSolarized
-"colo desert256
-colo afterglow
+colo desert256
+"colo afterglow
 "colo tango
 "let g:bg_tango = 1
 "colo cobalt2
