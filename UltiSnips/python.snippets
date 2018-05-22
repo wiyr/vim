@@ -1,0 +1,21 @@
+###########################################################################
+#                            TEXTMATE SNIPPETS                            #
+###########################################################################
+
+snippet hhh "use header file" b
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--input", help='input directory name', required=False)
+args = parser.parse_args()
+
+def main():
+    ${1}
+
+if __name__ == '__main__':
+    main()
+
+endsnippet
