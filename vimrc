@@ -501,6 +501,7 @@ colo desert256
 "colo cobalt2
 " highlight row
 set cursorline
+highlight CursorLine   cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
 hi Normal  ctermfg=252 ctermbg=none
 
 "Change cursor shape in different modes
