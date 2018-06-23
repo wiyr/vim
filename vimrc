@@ -132,7 +132,7 @@ let g:Lf_StlColorscheme = 'powerline'
 let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
 
 "代码补全
-Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --all' }
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 "display keywords of the programming language
 let g:ycm_seed_identifiers_with_syntax = 1
@@ -501,7 +501,7 @@ colo desert256
 "colo cobalt2
 " highlight row
 set cursorline
-highlight CursorLine   cterm=NONE ctermbg=black ctermfg=green guibg=NONE guifg=NONE
+hi CursorLine   cterm=NONE ctermbg=black ctermfg=NONE guibg=NONE guifg=NONE
 hi Normal  ctermfg=252 ctermbg=none
 
 "Change cursor shape in different modes
