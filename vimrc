@@ -1,20 +1,14 @@
+" 快捷键绑定 {{{
 "inoremap <esc> <nop> set previewheight=7 set nocompatible
 let mapleader = ','
 let localleader = '\\'
-set sw=4 ts=4 nu nobk ai cin
-set expandtab
-set encoding=utf-8
-set fileencoding=utf-8
-"shiftwidth tabstop number nobackup autoindent cindent
-syn on
-set mp=g++\ -std=c++11\ %\ -w\ -O2\ -o\ %<
-map <F5> :w<CR>:make<CR>
+au filetype c,cpp set makeprg=g++\ -std=c++11\ %\ -w\ -O2\ -o\ %<
+au filetype c,cpp map <F5> :w<CR>:AsyncRun! make<CR>
 au filetype c,cpp map <F6> :! ./%< <input.txt  <CR>
 au filetype java map<F5> :w<CR> :!javac %<CR>
 au filetype java map<F6> :!java %< <input.txt <CR>
 au FileType python map<F5> :w<CR> :AsyncRun! -raw python %<CR>
 au FileType python nmap<leader>rr :w<CR> :AsyncRun! -raw python %
-au BufNewFile,BufRead SCon* set filetype=python
 
 "set tags=./tags;,tags,~/.vimtags
 set mouse=a
@@ -26,8 +20,11 @@ nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-L> <C-W>l
 nnoremap <C-H> <C-W>h
-nmap <right> :bn!<cr>
-nmap <left> :bp!<cr>
+inoremap <C-h> <left>
+inoremap <C-l> <right>
+" Treat long lines as break lines (useful when moving around in them)
+map j gj
+map k gk
 nmap ; :
 "remove ^M
 nnoremap <leader>cmm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
@@ -47,14 +44,28 @@ func! DeleteTrailingWS()
 endfunc
 autocmd BufWrite *.tsx,*.cpp,*.vimrc,*.md :call DeleteTrailingWS()
 autocmd BufWrite *.py,*.h :call DeleteTrailingWS()
+" Allow to copy/paste between VIM instances
+"copy the current visual selection to ~/.vbuf, will copy complete line
+vmap <leader>y :w! ~/.vbuf<cr>
 
-inoremap <C-h> <left>
-inoremap <C-l> <right>
+"paste the contents of the buffer file
+nmap <leader>p :r ~/.vbuf<cr>
 
+" Useful mappings for managing tabs
+map <leader>tn :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tc :tabclose<cr>
+map <leader>tm :tabmove
+map <leader>t<leader> :tabnext
 
+" Opens a new tab with the current buffer's path
+" Super useful when editing files in the same directory
+map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+nmap <leader>; mqA;<esc>`q"
 vmap <silent> * :call VisualSearch('f')<CR>
 vmap <silent> # :call VisualSearch('b')<CR>
 vmap <silent> gv :call VisualSearch('gv')<CR>
+
 " 查找/搜索
 function! VisualSearch(direction) range
 	let l:saved_reg = @"
@@ -75,16 +86,12 @@ function! VisualSearch(direction) range
 	let @" = l:saved_reg
 endfunction
 
+"}}}
+
 "插件配置 {{{
 
 
 " 插件管理工具
-filetype off                  " required
-" set the runtime path to include Vundle and initialize
-"set rtp+=~/.vim/bundle/Vundle.vim
-"call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 call plug#begin('~/.vim/plugged')
 
 " 多光标
@@ -101,21 +108,28 @@ Plug 'terryma/vim-expand-region'
 nmap <Up> <Plug>(expand_region_expand)
 nmap <Down> <Plug>(expand_region_shrink)
 
-" 查找文件工具
-Plug 'kien/ctrlp.vim'
-let g:ctrlp_working_path_mode = 'rw'
-let g:ctrlp_by_filename = 0
-let g:ctrlp_max_files=500
-let g:ctrlp_max_depth=10
-let g:ctrlp_mruf_max=50
-let g:ctrlp_cmd = ''
-let g:ctrlp_custom_ignore = {
-			\ 'dir':  '\.git$\|\.hg$\|\.svn$\|build$',
-			\ 'file': '\.exe$\|\.so$\|\.dll$\|\.DS_Store$\|\.pyc$' }
-nnoremap <leader>o :CtrlPMRU<CR>
-au filetype nerdtree nnoremap mk :Bookmark<CR>
-au filetype nerdtree nnoremap cm :ClearBookmarks<CR>
-au filetype nerdtree nnoremap ca :ClearAllBookmarks<CR>
+" 快速搜索
+Plug 'mileszs/ack.vim'
+cnoreabbrev Ack Ack!
+nnoremap <Leader>a :Ack!<Space>
+
+" 文件查找
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+let g:Lf_ShortcutF = '<m-p>'
+let g:Lf_ShortcutB = '<m-n>'
+noremap <leader>o :LeaderfMru<cr>
+noremap <m-f> :LeaderfFunction!<cr>
+noremap <m-b> :LeaderfBuffer<cr>
+"let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+
+let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
+let g:Lf_WorkingDirectoryMode = 'Ac'
+let g:Lf_WindowHeight = 0.30
+let g:Lf_CacheDirectory = expand('~/.vim/cache')
+let g:Lf_ShowRelativePath = 0
+let g:Lf_HideHelp = 1
+let g:Lf_StlColorscheme = 'powerline'
+let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
 
 "代码补全
 Plug 'Valloric/YouCompleteMe'
@@ -126,6 +140,7 @@ let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_show_diagnostics_ui = 1
 " enable ycm work in comments
 let g:ycm_complete_in_comments = 1
+nnoremap gt :YcmCompleter GoToDefinition<CR>
 " it seems open much useless words
 "let g:ycm_semantic_triggers =  {
             "\ 'c,cpp,python,java,go': ['re!\w{2}'],
@@ -138,29 +153,26 @@ set completeopt=menu,menuone
 let g:ycm_key_invoke_completion = '<c-z>'
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 
-Plug 'rdnetto/YCM-Generator'
+" 代码对齐线
+Plug 'Yggdroot/indentLine'
+let g:indentLine_char = '┆'
+let g:indentLine_color_term = 239
 
-Plug 'nathanaelkane/vim-indent-guides'
-let g:indent_guides_guide_size = 1
-let g:indent_guides_enable_on_vim_startup = 1
-
-"tags
+" 自动生成tag
 Plug 'ludovicchabant/vim-gutentags'
-
 " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
-
 " 所生成的数据文件的名称
 let g:gutentags_ctags_tagfile = 'tags'
-
 " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
 let s:vim_tags = expand('~/.cache/tags')
 let g:gutentags_cache_dir = s:vim_tags
-
 " 配置 ctags 的参数
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
 let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+let g:gutentags_define_advanced_commands = 1
+auto filetype cpp nmap <leader>t :GutentagsToggleEnabled<CR>
 
 function! s:get_gutentags_status(mods) abort
 	let l:msg = ''
@@ -173,19 +185,18 @@ function! s:get_gutentags_status(mods) abort
 	 return l:msg
 endfunction
 
-
 " 检测 ~/.cache/tags 不存在就新建
 if !isdirectory(s:vim_tags)
    silent! call mkdir(s:vim_tags, 'p')
 endif
 
+" 异步运行命令
 Plug 'skywind3000/asyncrun.vim'
 " automatically open quickfix window when AsyncRun command is executed
 " set the quickfix window 6 lines height.
 let g:asyncrun_open = 15
 let $PYTHONUNBUFFERED=1
 nmap <leader>tt :AsyncStop!<CR>
-
 " ring the bell to notify you job finished
 let g:asyncrun_bell = 1
 au FileType c,cpp map <F4> :w<CR> :AsyncRun scons -uj8 <CR>
@@ -200,8 +211,13 @@ let NERDTreeAutoCenter = 1
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.DS_Store', '\.o']
 let NERDTreeShowHidden=1
 map <leader>n :NERDTreeToggle<CR>
+au filetype nerdtree nnoremap bk :Bookmark<CR>
+au filetype nerdtree nnoremap cm :ClearBookmarks<CR>
+au filetype nerdtree nnoremap ca :ClearAllBookmarks<CR>
 ":NERDTreeMirror<CR>
 
+" git状态文件列表栏
+Plug 'Xuyuanp/nerdtree-git-plugin'
 "open a NERDTree automatically when vim starts up if no files were specified
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endi
@@ -210,11 +226,10 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 " Locate file in hierarchy quickly
 map <leader>T :NERDTreeFind<cr>
 
+" 代码片段
 " Track the engine.
 Plug 'SirVer/ultisnips'
-" Snippets are separated from the engine. Add this if you want them:
 Plug 'honza/vim-snippets'
-
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 " inoremap <Tab> <c-r>=UltiSnips#ExpandSnippet()<cr>
 let g:UltiSnipsExpandTrigger="<c-j>"
@@ -222,7 +237,6 @@ let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 " let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 " let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
@@ -230,12 +244,8 @@ let g:UltiSnipsEditSplit="vertical"
 Plug 'majutsushi/tagbar'
 nnoremap <silent> <leader>m :Tagbar<CR>
 
-" webapi-vim
-Plug 'mattn/webapi-vim'
-
-
 " go语言工具
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 let g:go_fmt_command = "goimports"
 let g:go_highlight_types = 1
 let g:go_highlight_fileds = 1
@@ -260,10 +270,8 @@ autocmd FileType go nmap <leader>c <Plug>(go-coverage-toggle)
 " Show a list of interfaces which is implemented by the type under your cursor
 au FileType go nmap <leader>i <Plug>(go-implements)
 au FileType go nmap <leader>a <Plug>(go-calleers)
-
 " Show type info for the word under your cursor
 "au FileType go nmap <leader>i <Plug>(go-info)
-
 " Open the relevant Godoc for the word under the cursor
 au FileType go nmap <leader>gd <Plug>(go-doc)
 au FileType go nmap <leader>gv <Plug>(go-doc-vertical)
@@ -284,7 +292,7 @@ let g:go_test_show_name = 1
 "let g:go_auto_sameids = 1
 
 
-" git command in vim
+" git命令
 Plug 'tpope/vim-fugitive'
 " git状态侧边栏
 Plug 'airblade/vim-gitgutter'
@@ -295,6 +303,8 @@ let g:gitgutter_sign_added = '++'
 let g:gitgutter_sign_modified = '~~'
 let g:gitgutter_sign_removed = '--'
 let g:gitgutter_sign_modified_removed = '~-'
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk
 
 "快速移动
 Plug 'easymotion/vim-easymotion'
@@ -324,11 +334,13 @@ Plug 'junegunn/seoul256.vim'
 Plug 'iCyMind/NeoSolarized'
 Plug 'danilo-augusto/vim-afterglow'
 Plug 'flazz/vim-colorschemes'
+" hi for cpp such as class, template, function name
+Plug 'octol/vim-cpp-enhanced-highlight'
 
 " 注释工具
 Plug 'scrooloose/nerdcommenter'
 
-"typescript highlight
+" typescript高亮
 Plug 'leafgarland/typescript-vim'
 "it works pretty well but there are cases where it fails.
 let g:typescript_indent_disable = 1
@@ -336,14 +348,11 @@ let g:typescript_indent_disable = 1
 "Vim indenter for standalone and embedded JavaScript and TypeScript.
 Plug 'jason0x43/vim-js-indent'
 
-"typescript language
-"Plug 'Shougo/vimproc.vim'
-
 Plug 'Quramy/tsuquyomi'
 "use syntastic check
 let g:tsuquyomi_disable_quickfix = 1
 
-"easy code formatting
+" 代码格式化
 Plug 'Chiel92/vim-autoformat'
 let verbose=1
 "let g:formatdef_my_cpp='"astyle --style=java"'
@@ -358,45 +367,72 @@ let g:formatters_py=['yapf']
 "autocmd BufWritePost *.py call Flake8()
 "" to use colors defined in the colorscheme
 
+" 代码语法检查
+Plug 'w0rp/ale'
+let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
+let g:ale_echo_msg_format = '[%linter%] %code: %%s'
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 1
+let g:airline#extensions#ale#enabled = 1
+
+let g:ale_c_gcc_options = '-Wall -O2 -std=c99'
+let g:ale_cpp_gcc_options = '-Wall -O2 -std=c++14'
+let g:ale_c_cppcheck_options = ''
+let g:ale_cpp_cppcheck_options = ''
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+nmap <Leader>j :ALEToggle<CR>
+nmap <Leader>d :ALEDetail<CR>
+let b:ale_linters = {
+            \'cpp': ['clang'],
+            \'c': ['clang'],
+            \'python':['flake8']
+            \}
+
+
+
 " 代码风格检查
-Plug 'scrooloose/syntastic'
+"Plug 'scrooloose/syntastic'
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%{gutentags#statusline_cb(function('<SID>get_gutentags_status'))}
-set statusline+=%{gutentags#statusline()}
-set statusline+=%*
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%{gutentags#statusline_cb(function('<SID>get_gutentags_status'))}
+"set statusline+=%{gutentags#statusline()}
+"set statusline+=%*
 
-let g:syntastic_check_on_open=1
-let g:syntastic_auto_jump=0
-let g:syntastic_php_checkers=['php', 'phpcs']
-let g:syntastic_python_checkers=[]
-let g:syntastic_typescript_checkers = ['tsuquyomi', 'tslint'] " You shouldn't use 'tsc' checker.
-let g:syntastic_c_checkers=[]
-let g:syntastic_cpp_checkers=[]
-"let g:syntastic_java_checkers=['checkstyle', 'javac']
-"YCM required
-let g:syntastic_java_checkers = []
-let g:syntastic_go_checkers = ['go', 'golint', 'errcheck']
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-"let g:syntastic_reuse_loc_lists = 0
-"let g:syntastic_go_checkers=['govet', 'golint', 'gometalinter']
-"let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
-"let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
-"let g:syntastic_debug = 3
-nnoremap <leader>j :call ChangeJump()<CR>
+"let g:syntastic_check_on_open=1
+"let g:syntastic_auto_jump=0
+"let g:syntastic_php_checkers=['php', 'phpcs']
+"let g:syntastic_python_checkers=[]
+"let g:syntastic_typescript_checkers = ['tsuquyomi', 'tslint'] " You shouldn't use 'tsc' checker.
+"let g:syntastic_c_checkers=[]
+"let g:syntastic_cpp_checkers=[]
+""let g:syntastic_java_checkers=['checkstyle', 'javac']
+""YCM required
+"let g:syntastic_java_checkers = []
+"let g:syntastic_go_checkers = ['go', 'golint', 'errcheck']
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+""let g:syntastic_reuse_loc_lists = 0
+""let g:syntastic_go_checkers=['govet', 'golint', 'gometalinter']
+""let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
+""let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+""let g:syntastic_debug = 3
+"nnoremap <leader>j :call ChangeJump()<CR>
 
-function! ChangeJump()
-   let g:syntastic_auto_jump= 1 - g:syntastic_auto_jump
-    if len(g:syntastic_python_checkers)
-        let g:syntastic_python_checkers=[]
-    else
-        let g:syntastic_python_checkers=['flake8']
-    endif
-endfunction
+"function! ChangeJump()
+   "let g:syntastic_auto_jump= 1 - g:syntastic_auto_jump
+    "if len(g:syntastic_python_checkers)
+        "let g:syntastic_python_checkers=[]
+    "else
+        "let g:syntastic_python_checkers=['flake8']
+    "endif
+"endfunction
 
-" set mode of write markdown or text
+" 文本编写环境
 Plug 'junegunn/goyo.vim'
 Plug 'amix/vim-zenroom2'
 let g:goyo_width=100
@@ -404,14 +440,12 @@ let g:goyo_margin_top = 2
 let g:goyo_margin_bottom = 2
 nnoremap <silent> <leader>z :Goyo<cr>
 
-"Hyperfocus-writing in Vim.
-"Plug 'junegunn/limelight.vim'
-
 " confict with nnoremap <C-J> <C-W>j
 "Plug 'vim-latex/vim-latex'
 Plug 'lervag/vimtex'
 
 
+" python环境
 Plug 'python-mode/python-mode'
 let g:pymode_rope_goto_definition_bind = '<C-]>'
 let g:pymode_rope_goto_definition_cmd = 'e'
@@ -425,11 +459,24 @@ let g:pymode_lint = 0
 let g:pymode_syntax = 0
 let g:pymode_options_max_line_length = 79
 
-" All of your Plugins must be added before the following line
 call plug#end()
-filetype plugin indent on    " required
+"}}}
 
+" 环境变量 {{{
 
+filetype plugin indent on
+" Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
+" Turn on the WiLd menu
+set wildmenu
+set backspace=2
+set sw=4 ts=4 nu nobk ai cin
+set expandtab
+set encoding=utf-8
+set fileencoding=utf-8
+"shiftwidth tabstop number nobackup autoindent cindent
+syn on
+set foldmethod=marker
 "has problem in mac
 try
 	"set background=dark
@@ -450,9 +497,11 @@ colo desert256
 "colo afterglow
 "colo tango
 "let g:bg_tango = 1
+"colo spacegray
 "colo cobalt2
 " highlight row
 set cursorline
+hi Normal  ctermfg=252 ctermbg=none
 
 "Change cursor shape in different modes
 "For tmux running in iTerm2 on OS X
@@ -466,8 +515,33 @@ if has("gui_running")
     set t_Co=256
     set guitablabel=%M\ %t
 endif
+set noswapfile
+" error color terminal
+hi clear SpellBad
+hi SpellBad ctermfg=1 cterm=underline,bold gui=undercurl
+hi clear QuickFixLine
+hi QuickFixLine ctermfg=1 cterm=underline,bold gui=undercurl
+" highlight trailing space
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
 
+" Remember things between sessions
+"
+" '20  - remember marks for 20 previous files
+" \"50 - save 50 lines for each register
+" :20  - remember 20 items in command-line history
+" /20  - remember 20 items in search history
+" %    - remember the buffer list (if vim started without a file arg)
+" n    - set name of viminfo file
+set viminfo='20,\"50,:20,/20,%,n~/.viminfo.go
+" }}}
 
+" 其他配置 {{{
+au BufNewFile,BufRead SCon* set filetype=python
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 " 光标记忆
 augroup JumpCursorOnEdit
 	au!
@@ -530,66 +604,46 @@ if has("cscope")
     nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 endif
 
-set noswapfile
+function! Terminal_MetaMode(mode)
+    set ttimeout
+    if $TMUX != ''
+        set ttimeoutlen=30
+    elseif &ttimeoutlen > 80 || &ttimeoutlen <= 0
+        set ttimeoutlen=80
+    endif
+    if has('nvim') || has('gui_running')
+        return
+    endif
+    function! s:metacode(mode, key)
+        if a:mode == 0
+            exec "set <M-".a:key.">=\e".a:key
+        else
+            exec "set <M-".a:key.">=\e]{0}".a:key."~"
+        endif
+    endfunc
+    for i in range(10)
+        call s:metacode(a:mode, nr2char(char2nr('0') + i))
+    endfor
+    for i in range(26)
+        call s:metacode(a:mode, nr2char(char2nr('a') + i))
+        call s:metacode(a:mode, nr2char(char2nr('A') + i))
+    endfor
+    if a:mode != 0
+        for c in [',', '.', '/', ';', '[', ']', '{', '}']
+            call s:metacode(a:mode, c)
+        endfor
+        for c in ['?', ':', '-', '_']
+            call s:metacode(a:mode, c)
+        endfor
+    else
+        for c in [',', '.', '/', ';', '{', '}']
+            call s:metacode(a:mode, c)
+        endfor
+        for c in ['?', ':', '-', '_']
+            call s:metacode(a:mode, c)
+        endfor
+    endif
+endfunc
 
-" error color terminal
-hi clear SpellBad
-hi SpellBad ctermfg=1 cterm=underline,bold gui=undercurl
-hi clear QuickFixLine
-hi QuickFixLine ctermfg=1 cterm=underline,bold gui=undercurl
-" highlight trailing space
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
-
-" Remember things between sessions
-"
-" '20  - remember marks for 20 previous files
-" \"50 - save 50 lines for each register
-" :20  - remember 20 items in command-line history
-" /20  - remember 20 items in search history
-" %    - remember the buffer list (if vim started without a file arg)
-" n    - set name of viminfo file
-set viminfo='20,\"50,:20,/20,%,n~/.viminfo.go
-" Linebreak on 100 characters
-set lbr
-set tw=100
-" Treat long lines as break lines (useful when moving around in them)
-map j gj
-map k gk
-
-" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-"nnoremap <space> / "will cost a lot problem
-"nnoremap <c-space> ?
-" Allow to copy/paste between VIM instances
-"copy the current visual selection to ~/.vbuf, will copy complete line
-vmap <leader>y :w! ~/.vbuf<cr>
-
-"copy the current line to the buffer file if no visual selection
-"nmap <leader>y :.w! ~/.vbuf<cr>
-
-"paste the contents of the buffer file
-nmap <leader>p :r ~/.vbuf<cr>
-" Set 7 lines to the cursor - when moving vertically using j/k
-set so=7
-
-" Turn on the WiLd menu
-set wildmenu
-
-" Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
-map <leader>t<leader> :tabnext
-
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
-set backspace=2
-nmap <leader>; mqA;<esc>`q"
-"can't work
-"map <leader>; :execute "normal! mqA;\<esc>`q"
+call Terminal_MetaMode(0)
+" }}}
