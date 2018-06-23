@@ -22,6 +22,7 @@ nnoremap <C-L> <C-W>l
 nnoremap <C-H> <C-W>h
 inoremap <C-h> <left>
 inoremap <C-l> <right>
+nmap <m-l> :vertical res +
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
@@ -62,9 +63,10 @@ map <leader>t<leader> :tabnext
 " Super useful when editing files in the same directory
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 nmap <leader>; mqA;<esc>`q"
-vmap <silent> * :call VisualSearch('f')<CR>
-vmap <silent> # :call VisualSearch('b')<CR>
+"vmap <silent> * :call VisualSearch('f')<CR>
+"vmap <silent> # :call VisualSearch('b')<CR>
 vmap <silent> gv :call VisualSearch('gv')<CR>
+vmap // y/\V<C-R>"<CR>
 
 " 查找/搜索
 function! VisualSearch(direction) range
@@ -75,11 +77,11 @@ function! VisualSearch(direction) range
 	let l:pattern = substitute(l:pattern, "\n$", "", "")
 
 	if a:direction == 'b'
-		execute "normal ?" . l:pattern . "^M"
+		execute "normal ?" . l:pattern . ""
 	elseif a:direction == 'gv'
-		execute "noautocmd grep -Inr " . l:pattern . "" . " **/*"
+		execute "Ack! " . l:pattern . ""
 	elseif a:direction == 'f'
-		execute "normal /" . l:pattern . "^M"
+		execute "normal /" . l:pattern . ""
 	endif
 
 	let @/ = l:pattern
@@ -91,8 +93,33 @@ endfunction
 "插件配置 {{{
 
 
+
 " 插件管理工具
 call plug#begin('~/.vim/plugged')
+
+
+Plug 'tpope/vim-unimpaired'
+
+" 重复上一个操作
+Plug 'tpope/vim-repeat'
+
+" 快速找到头文件
+Plug 'vim-scripts/a.vim'
+
+"vim方式的文件树
+Plug 'justinmk/vim-dirvish'
+
+"Read-Eval-Print Loop
+Plug 'sillybun/vim-repl/'
+nnoremap <m-r> :REPLToggle<Cr>
+let g:sendtorepl_invoke_key = "<leader>w"
+let g:repl_program = {
+            \   "python": "python",
+            \   "default": "zsh"
+            \   }
+
+"
+"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
 " 多光标
 Plug 'terryma/vim-multiple-cursors'
@@ -306,21 +333,27 @@ let g:gitgutter_sign_modified_removed = '~-'
 nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
 
-"快速移动
+" 快速移动
 Plug 'easymotion/vim-easymotion'
-"map  / <Plug>(easymotion-sn)
-"omap / <Plug>(easymotion-tn)
-" These `n` & `N` mappings are options. You do not have to map `n` & `N` to
-" EasyMotion.
-" Without these mappings, `n` & `N` works fine. (These mappings just provide
-" different highlight method and have some other features )
-" map  n <Plug>(easymotion-next)
-"map  N <Plug>(easymotion-prev)
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
 " JK motions: Line motions
-"map <Leader>j <Plug>(easymotion-j)
-"map <Leader>k <Plug>(easymotion-k)
-"let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+let g:EasyMotion_startofline = 0 " keep cursor column when JK motion
 "let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" 高亮查询
+Plug 'haya14busa/incsearch.vim'
+" :h g:incsearch#auto_nohlsearch
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
 
 " 增强状态栏
 Plug 'vim-airline/vim-airline'
@@ -384,7 +417,7 @@ let g:ale_c_cppcheck_options = ''
 let g:ale_cpp_cppcheck_options = ''
 let g:ale_sign_error = '✗'
 let g:ale_sign_warning = '⚡'
-nmap <Leader>j :ALEToggle<CR>
+nmap <m-j> :ALEToggle<CR>
 nmap <Leader>d :ALEDetail<CR>
 let b:ale_linters = {
             \'cpp': ['clang'],
