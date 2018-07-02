@@ -3,7 +3,7 @@
 let mapleader = ','
 let localleader = '\\'
 au filetype c,cpp set makeprg=g++\ -std=c++11\ %\ -w\ -O2\ -o\ %<
-au filetype c,cpp map <F5> :w<CR>:AsyncRun! make<CR>
+au filetype c,cpp map <F5> :w<CR>:make<CR>
 au filetype c,cpp map <F6> :! ./%< <input.txt  <CR>
 au filetype java map<F5> :w<CR> :!javac %<CR>
 au filetype java map<F6> :!java %< <input.txt <CR>
@@ -97,6 +97,8 @@ endfunction
 " 插件管理工具
 call plug#begin('~/.vim/plugged')
 
+"
+Plug 'benmills/vimux'
 
 Plug 'tpope/vim-unimpaired'
 
@@ -108,6 +110,27 @@ Plug 'vim-scripts/a.vim'
 
 "vim方式的文件树
 Plug 'justinmk/vim-dirvish'
+
+augroup dirvish_config
+  autocmd!
+
+  " Map `t` to open in new tab.
+  autocmd FileType dirvish
+    \  nnoremap <silent><buffer> 7 :call dirvish#open('tabedit', 0)<CR>
+    \ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+  autocmd FileType dirvish
+    \  nnoremap <silent><buffer> 8 :call dirvish#open('split', 0)<CR>
+  autocmd FileType dirvish
+    \  nnoremap <silent><buffer> 9 :call dirvish#open('vsplit', 0)<CR>
+
+  " Map `gr` to reload.
+  autocmd FileType dirvish nnoremap <silent><buffer>
+    \ gr :<C-U>Dirvish %<CR>
+
+  " Map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
+  autocmd FileType dirvish nnoremap <silent><buffer>
+    \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
+augroup END
 
 "Read-Eval-Print Loop
 Plug 'sillybun/vim-repl/'
@@ -199,6 +222,7 @@ let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
 let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 let g:gutentags_define_advanced_commands = 1
+let g:gutentags_enabled = 0
 auto filetype cpp nmap <leader>t :GutentagsToggleEnabled<CR>
 
 function! s:get_gutentags_status(mods) abort
@@ -242,9 +266,6 @@ au filetype nerdtree nnoremap bk :Bookmark<CR>
 au filetype nerdtree nnoremap cm :ClearBookmarks<CR>
 au filetype nerdtree nnoremap ca :ClearAllBookmarks<CR>
 ":NERDTreeMirror<CR>
-
-" git状态文件列表栏
-Plug 'Xuyuanp/nerdtree-git-plugin'
 "open a NERDTree automatically when vim starts up if no files were specified
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endi
@@ -252,6 +273,9 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endi
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Locate file in hierarchy quickly
 map <leader>T :NERDTreeFind<cr>
+
+" git状态文件列表栏
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " 代码片段
 " Track the engine.
