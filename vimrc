@@ -253,7 +253,7 @@ let g:asyncrun_bell = 1
 au FileType c,cpp map <F4> :w<CR> :AsyncRun scons -uj8 <CR>
 
 " 文件列表
-Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 "let NERDTreeShowBookmarks=1
 " Make sure that when NT root is changed, Vim's pwd is also updated
 let NERDTreeChDirMode = 2
@@ -267,15 +267,15 @@ au filetype nerdtree nnoremap cm :ClearBookmarks<CR>
 au filetype nerdtree nnoremap ca :ClearAllBookmarks<CR>
 ":NERDTreeMirror<CR>
 "open a NERDTree automatically when vim starts up if no files were specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endi
-"close vim if the only window left open is a NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endi
+""close vim if the only window left open is a NERDTree
+"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Locate file in hierarchy quickly
 map <leader>T :NERDTreeFind<cr>
 
 " git状态文件列表栏
-Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'Xuyuanp/nerdtree-git-plugin', { 'on':  'NERDTreeToggle' }
 
 " 代码片段
 " Track the engine.
@@ -514,7 +514,7 @@ let g:pymode_rope_autoimport = 0
 let g:pymode_rope_completion = 0
 let g:pymode_lint = 0
 let g:pymode_syntax = 0
-let g:pymode_options_max_line_length = 79
+let g:pymode_options_max_line_length = 120
 
 call plug#end()
 "}}}
@@ -558,8 +558,9 @@ colo desert256
 "colo cobalt2
 " highlight row
 set cursorline
-hi CursorLine   cterm=NONE ctermbg=black ctermfg=NONE guibg=NONE guifg=NONE
+hi CursorLine   cterm=NONE ctermbg=darkgray ctermfg=NONE guibg=NONE guifg=NONE
 hi Normal  ctermfg=252 ctermbg=none
+hi ColorColumn ctermbg=8
 
 "Change cursor shape in different modes
 "For tmux running in iTerm2 on OS X
