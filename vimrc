@@ -223,7 +223,7 @@ let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 let g:gutentags_define_advanced_commands = 1
 let g:gutentags_enabled = 0
-auto filetype cpp nmap <leader>t :GutentagsToggleEnabled<CR>
+nmap <leader>t :GutentagsToggleEnabled<CR>
 
 function! s:get_gutentags_status(mods) abort
 	let l:msg = ''
