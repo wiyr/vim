@@ -7,13 +7,43 @@ snippet hhh "use header file" b
 # -*- coding: utf-8 -*-
 
 import argparse
+import logging
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--input", help='input directory name', required=False)
+parser.add_argument("--input", default="", help='input directory name', required=False)
+parser.add_argument("--logfile", default="logfile", help='input logfile path', required=False)
 args = parser.parse_args()
 
+LOGFMT = '%(asctime)s.%(msecs)03d[%(levelname)s]\
+(%(module)s:%(lineno)d): %(message)s'
+
+def initlog(lv, logfile=None, stream=None, longdate=False):
+    if logfile and logfile.startswith('syslog:'):
+        from logging import handlers
+        handler = handlers.SysLogHandler(logfile[7:])
+    elif logfile:
+        handler = logging.FileHandler(logfile)
+    elif stream:
+        handler = logging.StreamHandler(stream)
+    else:
+        handler = logging.StreamHandler(sys.stderr)
+
+    datefmt = '%H:%M:%S'
+    if longdate:
+        datefmt = '%Y-%m-%d %H:%M:%S'
+    handler.setFormatter(logging.Formatter(LOGFMT, datefmt))
+
+    logger = logging.getLogger()
+    if isinstance(lv, basestring):
+        lv = getattr(logging, lv)
+
+    logger.setLevel(lv)
+    logger.addHandler(handler)
+
+
 def main():
-    ${1}
+    initlog("INFO", args.logfile, None, True)
+	${1}
 
 if __name__ == '__main__':
     main()
