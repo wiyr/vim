@@ -8,6 +8,7 @@ au filetype c,cpp map <F6> :! ./%< <input.txt  <CR>
 au filetype java map<F5> :w<CR> :!javac %<CR>
 au filetype java map<F6> :!java %< <input.txt <CR>
 au FileType python map<F5> :w<CR> :AsyncRun! -raw python %<CR>
+au Filetype sh map<F5> :w<CR> :AsyncRun! -raw bash %<CR>
 au FileType python nmap<leader>rr :w<CR> :AsyncRun! -raw python %
 
 "set tags=./tags;,tags,~/.vimtags
