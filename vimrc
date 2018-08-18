@@ -155,9 +155,9 @@ let g:multi_cursor_quit_key='<ESC>'
 
 
 " 代码域选择
-Plug 'terryma/vim-expand-region'
-nmap <Up> <Plug>(expand_region_expand)
-nmap <Down> <Plug>(expand_region_shrink)
+"Plug 'terryma/vim-expand-region'
+"nmap <Up> <Plug>(expand_region_expand)
+"nmap <Down> <Plug>(expand_region_shrink)
 
 " 快速搜索
 Plug 'mileszs/ack.vim'
