@@ -598,6 +598,8 @@ set viminfo='20,\"50,:20,/20,%,n~/.viminfo.go
 
 " 其他配置 {{{
 au BufNewFile,BufRead SCon* set filetype=python
+au BufNewFile,BufRead Jenkins* set filetype=groovy
+au BufNewFile,BufRead *.conf set filetype=json
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
