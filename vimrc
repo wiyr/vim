@@ -27,6 +27,7 @@ nmap <m-l> :vertical res +
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
+inoremap jk <Esc>
 nmap ; :
 " Switch CWD to the directory of the open buffer
 cmap cd. lcd %:p:h
@@ -59,11 +60,18 @@ vmap // y/\V<C-R>"<CR>
 " 插件管理工具
 call plug#begin('~/.vim/plugged')
 
+" 注释工具
+Plug 'scrooloose/nerdcommenter', { 'commit': '9a32fd25344' }
+
+
 " 快速找到头文件
 Plug 'vim-scripts/a.vim'
 
 "vim方式的文件树
 Plug 'justinmk/vim-dirvish'
+
+" git命令
+Plug 'tpope/vim-fugitive', { 'commit': 'c118dabb8' }
 
 augroup dirvish_config
   autocmd!
@@ -112,7 +120,7 @@ cnoreabbrev Ack Ack!
 nnoremap <Leader>a :Ack!<Space>
 
 " 文件查找
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+Plug 'Yggdroot/LeaderF', { 'commit':'da43974f3d5', 'do': './install.sh' }
 let g:Lf_ShortcutF = '<m-p>'
 let g:Lf_ShortcutB = '<m-n>'
 noremap <leader>o :LeaderfMru<cr>
@@ -130,7 +138,7 @@ let g:Lf_StlColorscheme = 'powerline'
 let g:Lf_PreviewResult = {'Function':0, 'BufTag':0}
 
 "代码补全
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --all' }
+Plug 'Valloric/YouCompleteMe', { 'commit': 'e1ead995', 'do': './install.py --all' }
 let g:ycm_global_ycm_extra_conf='~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 "display keywords of the programming language
 let g:ycm_seed_identifiers_with_syntax = 1
@@ -147,7 +155,7 @@ let g:ycm_key_invoke_completion = '<c-z>'
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 
 " 代码对齐线 && better json
-Plug 'Yggdroot/indentLine'
+Plug 'Yggdroot/indentLine', { 'commit': '4e4964d148f' }
 let g:indentLine_char = '┆'
 let g:indentLine_color_term = 239
 " for remove json display in indentLine plug
@@ -155,7 +163,7 @@ Plug 'elzr/vim-json'
 let g:vim_json_syntax_conceal = 0
 
 " 自动生成tag
-Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags', {'commit' : 'b1eb744786'}
 " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
 let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
 " 所生成的数据文件的名称
@@ -271,6 +279,18 @@ let g:pymode_lint = 0
 let g:pymode_syntax = 0
 let g:pymode_options_max_line_length = 120
 
+" 高亮查询
+Plug 'haya14busa/incsearch.vim'
+" :h g:incsearch#auto_nohlsearch
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)N
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+
 call plug#end()
 "}}}
 
@@ -305,8 +325,8 @@ hi QuickFixLine ctermfg=1 cterm=underline,bold gui=undercurl
 " highlight trailing space
 hi ExtraWhitespace ctermbg=red guibg=red
 "修改补全弹出框颜色
-hi PMenu ctermfg=0 ctermbg=242 guifg=black guibg=darkgrey
-hi PMenuSel ctermfg=242 ctermbg=8 guifg=darkgrey guibg=black
+hi PMenu ctermfg=0 ctermbg=64 guifg=black guibg=darkgrey
+hi PMenuSel ctermfg=64 ctermbg=8 guifg=darkgrey guibg=black
 set viminfo='20,\"50,:20,/20,%,n~/.viminfo.go
 " }}}
 
@@ -422,3 +442,4 @@ endfunc
 
 call Terminal_MetaMode(0)
 " }}}
+
