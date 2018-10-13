@@ -48,6 +48,13 @@ vmap <leader>y :w! ~/.vbuf<cr>
 
 "paste the contents of the buffer file
 nmap <leader>p :r ~/.vbuf<cr>
+" Useful mappings for managing tabs
+map <leader>tn :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tc :tabclose<cr>
+map <leader>tm :tabmove
+map <leader>t<leader> :tabnext
+
 
 vmap // y/\V<C-R>"<CR>
 
