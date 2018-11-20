@@ -48,13 +48,12 @@ vmap <leader>y :w! ~/.vbuf<cr>
 
 "paste the contents of the buffer file
 nmap <leader>p :r ~/.vbuf<cr>
-" Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
-map <leader>t<leader> :tabnext
 
+" Useful mappings for managing tabs
+nnoremap <m-t> :tabnew<cr>
+nnoremap <leader>w :tabclose<cr>
+nnoremap <leader><tab> :tabnext<cr>
+nnoremap <leader><s-tab> :tabprevious<cr>
 
 vmap // y/\V<C-R>"<CR>
 
@@ -449,4 +448,3 @@ endfunc
 
 call Terminal_MetaMode(0)
 " }}}
-

@@ -8,6 +8,9 @@ snippet hhh "use header file" b
 
 import argparse
 import logging
+import sys
+import pandas as pd
+import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input", default="", help='input directory name', required=False)
@@ -39,6 +42,100 @@ def initlog(lv, logfile=None, stream=None, longdate=False):
 
     logger.setLevel(lv)
     logger.addHandler(handler)
+
+def check_json_in_error_range(json1, json2):
+    json1_keys = json1.keys()
+    json2_keys = json2.keys()
+
+    if len(json1_keys) != len(json2_keys):
+        return False
+
+    for key1 in json1_keys:
+        value1 = json1[key1]
+        value2 = json2[key1]
+
+        if isinstance(value1, int):
+            if value1 != int(value2):
+                return False
+        elif isinstance(value1, float):
+            delta = abs(value1 - float(value2))
+            if delta > 0.001:
+                return False
+        else:
+            if value1 != value2:
+                return False
+
+    return True
+
+def check_json_array_in_error_range(json_arr1, json_arr2):
+    if len(json_arr1) != len(json_arr2):
+        logging.error("len error")
+
+    check_array = {}
+    for i in range(len(json_arr1)):
+        json_item1 = json_arr1[i]
+        match = False
+        logging.info("check item %s", json_item1)
+        for j in range(len(json_arr2)):
+            json_item2 = json_arr2[j]
+            if j in check_array and check_array[j] == 1:
+                continue
+            # eps = 0.001
+            # if abs(json_item1['x'] - json_item2['x']) > eps:
+                # continue
+            # if abs(json_item1['y'] - json_item2['y']) > eps:
+                # continue
+            # if abs(json_item1['z'] - json_item2['z']) > eps:
+                # continue
+            same = check_json_in_error_range(json_item1, json_item2)
+            if not same:
+                logging.error("item %s match %s failed", json_item1, json_item2)
+                return False
+
+            logging.info("item match %s", json_item2)
+            check_array[j] = 1
+            match = True
+            break
+        if match == False:
+            logging.error("item %s match none", json_item1)
+            return False
+
+    return True
+
+def load_csv_file(file_name):
+    with open(file_name, "r") as csv_file:
+        result = []
+        data = csv_file.readlines()
+        for line in data:
+            line = line.strip()
+            result.append(line.split(","))
+
+        return result
+
+def load_csv_file_with_header(filename):
+    return pd.read_csv(filename)
+
+def do_sth(filepath):
+    pass
+
+def dfs(dir):
+    files = os.listdir(dir)
+    for file in files:
+        if os.path.isdir(dir + "/" + file):
+            dfs(dir + "/" + file)
+            continue
+        do_sth(dir + "/" + file)
+
+def save_json_data(data, path):
+    fp = open(path, "w")
+    fp.write(json.dumps(data, indent=4))
+    fp.close()
+
+def read_json_data(path):
+    fp = open(path, "r")
+    data = json.load(fp)
+    fp.close()
+    return data
 
 
 def main():
