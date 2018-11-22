@@ -162,8 +162,11 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 
 " 代码对齐线 && better json
 Plug 'Yggdroot/indentLine', { 'commit': '4e4964d148f' }
-let g:indentLine_char = '┆'
-let g:indentLine_color_term = 239
+let g:indentLine_char = '·'
+let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_color_term = 243
+let g:indentLine_leadingSpaceChar = '·'
+"let g:indentLine_char = '¦'
 " for remove json display in indentLine plug
 Plug 'elzr/vim-json'
 let g:vim_json_syntax_conceal = 0
@@ -176,7 +179,7 @@ let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
 let g:gutentags_ctags_tagfile = 'tags'
 " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
 " FIXME
-let s:vim_tags = expand('/mnt/ficusbelgium/yxwang/.cache/tags')
+let s:vim_tags = expand('/mnt/ficuszimbabwe/yxwang/.cache/tags')
 let g:gutentags_cache_dir = s:vim_tags
 " 配置 ctags 的参数
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
@@ -238,8 +241,8 @@ nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
 
 " 增强状态栏
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline', { 'commit': 'ada0ba8ae3eea778d165ec4794ee557df98fab87' }
+Plug 'vim-airline/vim-airline-themes', { 'commit': '3bfe1d00d48f7c35b7c0dd7af86229c9e63e14a9'}
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 
@@ -308,7 +311,7 @@ set so=7
 " Turn on the WiLd menu
 set wildmenu
 set backspace=2
-set sw=4 ts=4 nu nobk ai cin
+set sw=2 ts=2 nu nobk ai cin
 set expandtab
 set encoding=utf-8
 set fileencoding=utf-8
