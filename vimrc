@@ -162,8 +162,10 @@ let g:ycm_collect_identifiers_from_comments_and_strings = 1
 
 " 代码对齐线 && better json
 Plug 'Yggdroot/indentLine', { 'commit': '4e4964d148f' }
-let g:indentLine_char = '┆'
-let g:indentLine_color_term = 239
+let g:indentLine_char = '·'
+let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_color_term = 243
+let g:indentLine_leadingSpaceChar = '·'
 " for remove json display in indentLine plug
 Plug 'elzr/vim-json'
 let g:vim_json_syntax_conceal = 0
@@ -238,8 +240,8 @@ nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
 
 " 增强状态栏
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline', { 'commit': 'ada0ba8ae3eea778d165ec4794ee557df98fab87' }
+Plug 'vim-airline/vim-airline-themes', { 'commit': '3bfe1d00d48f7c35b7c0dd7af86229c9e63e14a9'}
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 
