@@ -37,7 +37,7 @@ def initlog(lv, logfile=None, stream=None, longdate=False):
     handler.setFormatter(logging.Formatter(LOGFMT, datefmt))
 
     logger = logging.getLogger()
-    if isinstance(lv, basestring):
+    if isinstance(lv, str):
         lv = getattr(logging, lv)
 
     logger.setLevel(lv)
@@ -139,7 +139,7 @@ def read_json_data(path):
 
 
 def main():
-    initlog("INFO", args.logfile, None, True)
+    initlog("INFO", None, None, True)
 	${1}
 
 if __name__ == '__main__':
