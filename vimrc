@@ -249,6 +249,8 @@ let g:airline_right_sep=''
 " hi for cpp such as class, template, function name
 Plug 'octol/vim-cpp-enhanced-highlight'
 
+"Plug 'uber/prototool', { 'rtp':'vim/prototool' }
+
 " 代码语法检查
 Plug 'w0rp/ale'
 let g:ale_linters_explicit = 1
@@ -268,12 +270,13 @@ let g:ale_sign_error = '✗'
 let g:ale_sign_warning = '⚡'
 nmap <m-j> :ALEToggle<CR>
 nmap <Leader>d :ALEDetail<CR>
-let b:ale_linters = {
-            \'cpp': ['clang'],
-            \'c': ['clang'],
-            \'python':['flake8']
-            \}
+"let b:ale_linters = {
+            "\'cpp': ['clang'],
+            "\'c': ['clang'],
+            "\'proto': ['prototool']
+            "\}
 
+            "\'python':['flake8']
 " python环境
 Plug 'python-mode/python-mode'
 let g:pymode_rope_goto_definition_bind = '<C-]>'
