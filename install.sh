@@ -11,6 +11,9 @@ if [ -d $HOME/.vim ]; then
     mv $HOME/.vim $HOME/.vim.bak
 fi
 /usr/bin/env git clone https://github.com/wiyr/vim.git $HOME/.vim
+pushd $HOME/.vim
+/usr/bin/env git checkout -b simple_version origin/simple_version
+popd
 
 if [ ! -e $HOME/.vim/vimrc ]; then
     exit 1
