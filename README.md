@@ -1,5 +1,5 @@
 ### 安装
-    wget https://raw.github.com/wiyr/vim/simle_version/install.sh -O - | bash
+    wget https://raw.github.com/wiyr/vim/simple_version/install.sh -O - | bash
 
 ### 需要
 
