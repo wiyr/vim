@@ -50,7 +50,7 @@ vmap <leader>y :w! ~/.vbuf<cr>
 nmap <leader>p :r ~/.vbuf<cr>
 
 " Useful mappings for managing tabs
-nnoremap <m-t> :tabnew<cr>
+nnoremap <leader>t :tabnew<cr>
 nnoremap <leader>w :tabclose<cr>
 nnoremap <leader><tab> :tabnext<cr>
 nnoremap <leader><s-tab> :tabprevious<cr>
@@ -66,9 +66,44 @@ vmap // y/\V<C-R>"<CR>
 " 插件管理工具
 call plug#begin('~/.vim/plugged')
 
+Plug 'mhinz/vim-startify'
+
+Plug 'liuchengxu/vista.vim'
+" Executive used when opening vista sidebar without specifying it.
+" See all the avaliable executives via `:echo g:vista#executives`.
+let g:vista_default_executive = 'ctags'
+
+" Use release branch (Recommend)
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"" TextEdit might fail if hidden is not set.
+"set hidden
+"set statusline^=%{coc#status()}
+
+Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+nnoremap <silent> <leader> :WhichKey ','<CR>
+" By default timeoutlen is 1000 ms
+set timeoutlen=500
+
+
+Plug 'yxwang/proto-n.vim'
+Plug 'chiphogg/vim-prototxt'
+
+" rst support
+"Plug 'Rykka/riv.vim'
+"let proj1 = { 'path': '/mnt/WXRC0012/yxwang/src/TF_Autobot', }
+"set maxmempattern=2000000
+"let g:riv_projects = [proj1]
+"Plug 'Rykka/InstantRst'
+"let g:instant_rst_additional_dirs=['/mnt/CEPH_CHANNEL/yxwang/src/TF_Autobot/docs']
+"let g:instant_rst_template='/mnt/ficuszimbabwe/yxwang/src/rhythm.css/dist/css/rhythm.css'
+"
 " 注释工具
 Plug 'scrooloose/nerdcommenter', { 'commit': '9a32fd25344' }
+au Filetype python let NERDDefaultAlign="left"
+let g:NERDCustomDelimiters = { 'prototxt': { 'left': '#'} }
 
+" 高亮单词
+"Plug 'lfv89/vim-interestingwords'
 
 " 快速找到头文件
 Plug 'vim-scripts/a.vim'
@@ -101,24 +136,25 @@ augroup dirvish_config
 augroup END
 
 " 多光标
-Plug 'terryma/vim-multiple-cursors'
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-n>'
-let g:multi_cursor_prev_key='<C-p>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<ESC>'
-function! Multiple_cursors_before()
-	"set foldmethod=manual
-    "let s:old_ycm_whitelist = g:ycm_filetype_whitelist
-    "let g:ycm_filetype_whitelist = {}
-    "call youcompleteme#DisableCursorMovedAutocommands()
-endfunction
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+"Plug 'terryma/vim-multiple-cursors'
+"let g:multi_cursor_use_default_mapping=0
+"let g:multi_cursor_next_key='<C-n>'
+"let g:multi_cursor_prev_key='<C-p>'
+"let g:multi_cursor_skip_key='<C-x>'
+"let g:multi_cursor_quit_key='<ESC>'
+"function! Multiple_cursors_before()
+"    "set foldmethod=manual
+"    "let s:old_ycm_whitelist = g:ycm_filetype_whitelist
+"    "let g:ycm_filetype_whitelist = {}
+"    "call youcompleteme#DisableCursorMovedAutocommands()
+"endfunction
 
-function! Multiple_cursors_after()
-    "set foldmethod=marker
-    "let g:ycm_filetype_whitelist = s:old_ycm_whitelist
-    "call youcompleteme#EnableCursorMovedAutocommands()
-endfunction
+"function! Multiple_cursors_after()
+"    "set foldmethod=marker
+"    "let g:ycm_filetype_whitelist = s:old_ycm_whitelist
+"    "call youcompleteme#EnableCursorMovedAutocommands()
+"endfunction
 
 " 快速搜索
 Plug 'mileszs/ack.vim'
@@ -126,13 +162,13 @@ cnoreabbrev Ack Ack!
 nnoremap <Leader>a :Ack!<Space>
 
 " 文件查找
-Plug 'Yggdroot/LeaderF', { 'commit':'da43974f3d5', 'do': './install.sh' }
-let g:Lf_ShortcutF = '<m-p>'
+Plug 'Yggdroot/LeaderF', { 'commit':'20a982e', 'do': './install.sh' }
+let g:Lf_ShortcutF = '<leader>l'
 let g:Lf_ShortcutB = '<m-n>'
 noremap <leader>o :LeaderfMru<cr>
 noremap <m-f> :LeaderfFunction!<cr>
 noremap <m-b> :LeaderfBuffer<cr>
-"let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
 
 let g:Lf_RootMarkers = ['.project', '.root', '.svn', '.git']
 let g:Lf_WorkingDirectoryMode = 'Ac'
@@ -152,13 +188,23 @@ let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_show_diagnostics_ui = 0
 " enable ycm work in comments
 let g:ycm_complete_in_comments = 1
-nnoremap gt :YcmCompleter GoToDefinition<CR>
+"nnoremap gt :YcmCompleter GoToDefinition<CR>
+
  " disable preview
 let g:ycm_add_preview_to_completeopt = 0
 set completeopt=menu,menuone
 " trigger complete
 let g:ycm_key_invoke_completion = '<c-z>'
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
+" --------python ----------------
+let g:ycm_python_interpreter_path = '/home/yxwang/.pyenv/versions/3.5.5/bin/python'
+let g:ycm_python_sys_path = []
+let g:ycm_extra_conf_vim_data = [
+  \  'g:ycm_python_interpreter_path',
+  \  'g:ycm_python_sys_path'
+  \]
+let g:ycm_global_ycm_extra_conf = '~/.global_extra_conf.py'
+let g:ycm_filetype_blacklist = {'rst' : 1}
 
 " 代码对齐线 && better json
 Plug 'Yggdroot/indentLine', { 'commit': '4e4964d148f' }
@@ -179,7 +225,7 @@ let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
 let g:gutentags_ctags_tagfile = 'tags'
 " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
 " FIXME
-let s:vim_tags = expand('/mnt/ficuszimbabwe/yxwang/.cache/tags')
+let s:vim_tags = expand('/mnt/CEPH_CHANNEL/yxwang/.cache/tags')
 let g:gutentags_cache_dir = s:vim_tags
 " 配置 ctags 的参数
 let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
@@ -187,7 +233,7 @@ let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
 let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 let g:gutentags_define_advanced_commands = 1
 let g:gutentags_enabled = 0
-nmap <leader>t :GutentagsToggleEnabled<CR>
+" nmap <leader>t :GutentagsToggleEnabled<CR>
 function! s:get_gutentags_status(mods) abort
 	let l:msg = ''
 	if index(a:mods, 'ctags') > 0
@@ -229,7 +275,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 let g:UltiSnipsEditSplit="vertical"
 
 " git状态侧边栏
-Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter', { 'commit': '50a7062909d91a290fae04219887b1b45f3138db' }
 let g:gitgutter_highlight_lines = 0
 let g:gitgutter_escape_grep = 1
 let g:gitgutter_eager = 1
@@ -250,9 +296,17 @@ let g:airline_right_sep=''
 Plug 'octol/vim-cpp-enhanced-highlight'
 
 "Plug 'uber/prototool', { 'rtp':'vim/prototool' }
+"
+" 代码格式化
+Plug 'Chiel92/vim-autoformat', { 'commit': '3c50ddb50635f7899b4339a64bc02333cdd24a4b' }
+let verbose=1
+"let g:formatdef_my_cpp='"astyle --style=java"'
+"let g:formatters_cpp=['my_cpp']
+"sudo pip install --upgrade autopep8
+let g:formatters_py=['yapf', 'autopep8']
 
-" 代码语法检查
-Plug 'w0rp/ale'
+" 代码语法检查:
+Plug 'w0rp/ale', { 'commit': 'aa5c82b1718f44d04f6dd11bc63f6eeed2089d9d' }
 let g:ale_linters_explicit = 1
 let g:ale_completion_delay = 500
 let g:ale_echo_delay = 20
@@ -271,24 +325,25 @@ let g:ale_sign_warning = '⚡'
 nmap <m-j> :ALEToggle<CR>
 nmap <Leader>d :ALEDetail<CR>
 "let b:ale_linters = {
-            "\'cpp': ['clang'],
-            "\'c': ['clang'],
-            "\'proto': ['prototool']
-            "\}
+            \'cpp': ['clang'],
+            \'c': ['clang'],
+            \'proto': ['prototool'],
+            \'python': ['flake8']
+            \}
 
-            "\'python':['flake8']
 " python环境
-Plug 'python-mode/python-mode'
-let g:pymode_rope_goto_definition_bind = '<C-]>'
-let g:pymode_rope_goto_definition_cmd = 'e'
-let g:pymode_rope_lookup_project = 0
-let g:pymode_rope = 0
-let g:pymode_folding = 0
-let g:pymode_rope_autoimport = 0
-"use ycm
-let g:pymode_rope_completion = 0
+Plug 'python-mode/python-mode', {'branch': 'develop'}
+"let g:pymode_rope_goto_definition_bind = '<C-]>'
+"let g:pymode_rope_goto_definition_cmd = 'e'
+"let g:pymode_rope_lookup_project = 0
+"let g:pymode_rope = 0
+""let g:pymode_python = 'python3'
+"let g:pymode_folding = 0
+"let g:pymode_rope_autoimport = 0
+""use ycm
+"let g:pymode_rope_completion = 0
 let g:pymode_lint = 0
-let g:pymode_syntax = 0
+"let g:pymode_syntax = 1
 let g:pymode_options_max_line_length = 120
 
 " 高亮查询
@@ -308,13 +363,18 @@ call plug#end()
 
 " 环境变量 {{{
 
+set ff=unix
 filetype plugin indent on
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 " Turn on the WiLd menu
 set wildmenu
 set backspace=2
-set sw=2 ts=2 nu nobk ai cin
+set sw=4 ts=4 nu nobk ai cin
+"inoremap <c-s> <Esc>:Update<CR>
+noremap <silent> <C-S>          :update<CR>
+vnoremap <silent> <C-S>         <C-C>:update<CR>
+inoremap <silent> <C-S>         <C-O>:update<CR>
 set expandtab
 set encoding=utf-8
 set fileencoding=utf-8
@@ -337,13 +397,14 @@ hi QuickFixLine ctermfg=1 cterm=underline,bold gui=undercurl
 " highlight trailing space
 hi ExtraWhitespace ctermbg=red guibg=red
 "修改补全弹出框颜色
-hi PMenu ctermfg=0 ctermbg=64 guifg=black guibg=darkgrey
-hi PMenuSel ctermfg=64 ctermbg=8 guifg=darkgrey guibg=black
+hi pmenu ctermfg=0 ctermbg=64 guifg=black guibg=darkgrey
+hi pmenusel ctermfg=64 ctermbg=8 guifg=darkgrey guibg=black
 set viminfo='20,\"50,:20,/20,%,n~/.viminfo.go
 " }}}
 
 " 其他配置 {{{
 au BufNewFile,BufRead SCon* set filetype=python
+au BufNewFile,BufRead *.pb.cfg setfiletype prototxt
 au BufNewFile,BufRead *.conf set filetype=txt
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
