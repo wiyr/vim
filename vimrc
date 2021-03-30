@@ -212,7 +212,6 @@ let g:indentLine_char = '·'
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_color_term = 243
 let g:indentLine_leadingSpaceChar = '·'
-"let g:indentLine_char = '¦'
 " for remove json display in indentLine plug
 Plug 'elzr/vim-json'
 let g:vim_json_syntax_conceal = 0
